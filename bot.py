@@ -44,6 +44,7 @@ def start_bot():
     dp.add_handler(MessageHandler(Filters.text, forward_message))
     dp.add_error_handler(error)
 
+    logger.info('Starting polling...')
     updater.start_polling()
     updater.idle()
 

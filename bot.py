@@ -9,14 +9,18 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
-CHAT_ID = os.environ.get('CHAT_ID')
+FORWARD_FROM_CHAT_ID = os.environ.get('FORWARD_FROM_CHAT_ID')
+FORWARD_TO_CHAT_ID = os.environ.get('FORWARD_TO_CHAT_ID')
 CREATOR_ID = os.environ.get('CREATOR_ID')
 TAGS_TO_FORWARD = ['#cv', '#job', '#вакансия', '#работа']
 
 
 def forward_message(bot, update):
+    if str(update.message.chat.id) != FORWARD_FROM_CHAT_ID:
+        logger.warning('Blocked attempt to forward from %s', update.message.chat.id)
+        return
     if any([tag in update.message.text for tag in TAGS_TO_FORWARD]):
-        forward_to = CHAT_ID
+        forward_to = FORWARD_TO_CHAT_ID
     else:
         forward_to = CREATOR_ID
 
@@ -33,9 +37,11 @@ def error(bot, update, error):
 
 
 def start_bot():
-    if not any([BOT_TOKEN, CHAT_ID, CREATOR_ID]):
+    if not any([BOT_TOKEN, FORWARD_FROM_CHAT_ID, FORWARD_TO_CHAT_ID, CREATOR_ID]):
         raise ValueError(
-            'BOT_TOKEN, CHAT_ID or CREATOR_ID missing from environment variables'
+            'One of the variables -'
+            'BOT_TOKEN, FORWARD_FROM_CHAT_ID, FORWARD_TO_CHAT_ID or CREATOR_ID'
+            'is missing in environment'
         )
 
     updater = Updater(BOT_TOKEN)
@@ -44,7 +50,7 @@ def start_bot():
     dp.add_handler(MessageHandler(Filters.text, forward_message))
     dp.add_error_handler(error)
 
-    logger.info('Starting polling...')
+    logger.info('Start polling...')
     updater.start_polling()
     updater.idle()
 

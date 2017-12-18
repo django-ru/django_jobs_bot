@@ -33,8 +33,10 @@ def error(bot, update, error):
 
 
 def start_bot():
-    if not BOT_TOKEN or not CHAT_ID:
-        raise ValueError('BOT_TOKEN or CHAT_ID missing from environment variables')
+    if not any([BOT_TOKEN, CHAT_ID, CREATOR_ID]):
+        raise ValueError(
+            'BOT_TOKEN, CHAT_ID or CREATOR_ID missing from environment variables'
+        )
 
     updater = Updater(BOT_TOKEN)
 

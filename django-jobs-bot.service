@@ -1,0 +1,12 @@
+[Unit]
+Description=Django Jobs Bot
+After=network.target
+
+[Service]
+Restart=always
+Type=simple
+WorkingDirectory=/root/dev/django_jobs_bot
+ExecStart=/bin/sh -c '/usr/local/bin/pipenv run python3 bot.py > /root/dev/django_jobs_bot/output.log 2>&1'
+
+[Install]
+WantedBy=multi-user.target

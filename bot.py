@@ -12,6 +12,7 @@ BOT_TOKEN = os.environ.get('BOT_TOKEN')
 FORWARD_FROM_CHAT_ID = os.environ.get('FORWARD_FROM_CHAT_ID')
 FORWARD_TO_CHAT_ID = os.environ.get('FORWARD_TO_CHAT_ID')
 CREATOR_ID = os.environ.get('CREATOR_ID')
+BOT_POLL_INTERVAL = os.environ.get('BOT_POLL_INTERVAL', 3600)
 TAGS_TO_FORWARD = ['#cv', '#job', '#вакансия', '#работа']
 
 
@@ -19,7 +20,7 @@ def forward_message(bot, update):
     if str(update.message.chat.id) != FORWARD_FROM_CHAT_ID:
         logger.warning('Blocked attempt to forward from %s', update.message.chat.id)
         return
-    if any([tag in update.message.text for tag in TAGS_TO_FORWARD]):
+    if any([tag in update.message.text.lower() for tag in TAGS_TO_FORWARD]):
         forward_to = FORWARD_TO_CHAT_ID
     else:
         forward_to = CREATOR_ID
@@ -51,7 +52,7 @@ def start_bot():
     dp.add_error_handler(error)
 
     logger.info('Start polling...')
-    updater.start_polling()
+    updater.start_polling(poll_interval=BOT_POLL_INTERVAL)
     updater.idle()
 
 

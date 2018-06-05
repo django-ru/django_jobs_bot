@@ -7,7 +7,7 @@ name = "pypi"
 
 [packages]
 
-python-telegram-bot = "==9.0.0"
+python-telegram-bot = "*"
 
 
 [dev-packages]

@@ -52,7 +52,7 @@ def start_bot():
     dp.add_error_handler(error)
 
     logger.info('Start polling...')
-    updater.start_polling(poll_interval=BOT_POLL_INTERVAL)
+    updater.start_polling(poll_interval=float(BOT_POLL_INTERVAL))
     updater.idle()
 
 

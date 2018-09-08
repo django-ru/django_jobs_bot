@@ -15,6 +15,10 @@ CREATOR_ID = os.environ.get('CREATOR_ID')
 BOT_POLL_INTERVAL = os.environ.get('BOT_POLL_INTERVAL', 3600)
 TAGS_TO_FORWARD = ['#cv', '#job', '#вакансия', '#работа']
 
+SOCKS_URL = os.environ.get('SOCKS_URL')
+SOCKS_USER = os.environ.get('SOCKS_USER')
+SOCKS_PASSWORD = os.environ.get('SOCKS_PASSWORD')
+
 
 def forward_message(bot, update):
     if str(update.message.chat.id) != FORWARD_FROM_CHAT_ID:
@@ -44,8 +48,11 @@ def start_bot():
             'BOT_TOKEN, FORWARD_FROM_CHAT_ID, FORWARD_TO_CHAT_ID or CREATOR_ID'
             'is missing in environment'
         )
-
-    updater = Updater(BOT_TOKEN)
+    proxy_config = {
+        'proxy_url': SOCKS_URL,
+        'urllib3_proxy_kwargs': {'username': SOCKS_USER, 'password': SOCKS_PASSWORD}
+    }
+    updater = Updater(BOT_TOKEN, request_kwargs=proxy_config)
 
     dp = updater.dispatcher
     dp.add_handler(MessageHandler(Filters.text, forward_message))

@@ -48,10 +48,14 @@ def start_bot():
             'BOT_TOKEN, FORWARD_FROM_CHAT_ID, FORWARD_TO_CHAT_ID or CREATOR_ID'
             'is missing in environment'
         )
-    proxy_config = {
-        'proxy_url': SOCKS_URL,
-        'urllib3_proxy_kwargs': {'username': SOCKS_USER, 'password': SOCKS_PASSWORD}
-    }
+
+    if SOCKS_URL:
+        proxy_config = {
+            'proxy_url': SOCKS_URL,
+            'urllib3_proxy_kwargs': {'username': SOCKS_USER, 'password': SOCKS_PASSWORD}
+        }
+    else:
+        proxy_config = None
     updater = Updater(BOT_TOKEN, request_kwargs=proxy_config)
 
     dp = updater.dispatcher

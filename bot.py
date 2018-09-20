@@ -42,7 +42,7 @@ def error(bot, update, error):
 
 
 def start_bot():
-    if not any([BOT_TOKEN, FORWARD_FROM_CHAT_ID, FORWARD_TO_CHAT_ID, CREATOR_ID]):
+    if not all([BOT_TOKEN, FORWARD_FROM_CHAT_ID, FORWARD_TO_CHAT_ID, CREATOR_ID]):
         raise ValueError(
             'One of the variables -'
             'BOT_TOKEN, FORWARD_FROM_CHAT_ID, FORWARD_TO_CHAT_ID or CREATOR_ID'

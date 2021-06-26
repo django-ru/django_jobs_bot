@@ -31,7 +31,7 @@ def warn(update: Update, context: CallbackContext):
     update.message.delete()
 
 
-def log_errors(bot, update, error):
+def log_errors(update, error):
     logger.warning('Update "%s" caused error "%s"', update, error)
 
 

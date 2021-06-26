@@ -1,6 +1,8 @@
 # Forwarding bot for https://t.me/django_jobs
 
-Stupidly simple bot that forwards group messages with certain hashtags to specified Telegram channel.
+Bot that forwards certain messages in Telegram group to a specified channel.
+
+## Setup
 
 You have to provide several environment variables to be able to run this:
 

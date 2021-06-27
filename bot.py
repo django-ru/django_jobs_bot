@@ -80,7 +80,7 @@ def main():
     bot = Updater(bot_token)
     bot.dispatcher.add_handler(
         forward_messages_that_match(
-            ContainsJobHashTag,
+            ContainsJobHashTag(),
             Filters.text,
             ~Filters.command,
         )

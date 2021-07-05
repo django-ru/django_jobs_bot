@@ -28,7 +28,7 @@ pep517==0.10.0
     # via pip-tools
 pip-tools==6.2.0
     # via -r requirements-dev.in
-python-telegram-bot==13.6
+python-telegram-bot==13.7
     # via -r requirements.in
 pytz==2021.1
     # via

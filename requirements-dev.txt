@@ -6,7 +6,7 @@
 #
 apscheduler==3.6.3
     # via python-telegram-bot
-black==21.9b0
+black==21.10b0
     # via -r requirements-dev.in
 cachetools==4.2.2
     # via python-telegram-bot
@@ -46,7 +46,7 @@ tomli==1.0.4
     # via black
 tornado==6.1
     # via python-telegram-bot
-typing-extensions==3.10.0.1
+typing-extensions==3.10.0.2
     # via black
 tzlocal==2.1
     # via apscheduler

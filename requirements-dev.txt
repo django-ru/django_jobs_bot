@@ -28,7 +28,7 @@ pip-tools==6.4.0
     # via -r requirements-dev.in
 platformdirs==2.2.0
     # via black
-python-telegram-bot==13.9
+python-telegram-bot==13.10
     # via -r requirements.in
 pytz==2021.1
     # via

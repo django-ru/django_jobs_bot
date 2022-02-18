@@ -1,6 +1,10 @@
-# Forwarding bot for https://t.me/django_jobs
+# Helper bot for https://t.me/django_jobs
 
-Bot that forwards certain messages in Telegram group to a specified channel.
+- forwards certain messages in Telegram group to a specified channel.
+- adds admin commands to help with group management
+  - `/warn` - warn a user about job posting requirements
+  - `/fw` - manually forward a message to a channel
+  - `/ro {3 for flood}` - put user in read-only mode for 1 day. Optionally accepts custom number of days
 
 ## Setup
 

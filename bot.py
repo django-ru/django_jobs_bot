@@ -1,12 +1,12 @@
 import logging
-import operator
 import os
-from functools import reduce
 
-import sentry_sdk
-from telegram import Message, ParseMode, Update
-from telegram.ext import CallbackContext, CommandHandler, MessageHandler, Updater
-from telegram.ext.filters import MessageFilter, Filters
+from telegram.ext import Updater
+from telegram.ext.filters import Filters as contrib_filters
+
+import filters
+import handlers
+from utils import in_heroku, init_sentry
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -15,82 +15,47 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def forward(update: Update, context: CallbackContext):
-    chat_id_to_forward = int(os.getenv("CHAT_ID_TO"))
-    logger.info("Forwarding message to %s", chat_id_to_forward)
-    update.message.forward(chat_id=chat_id_to_forward)
-
-
-def warn(update: Update, context: CallbackContext):
-    rules_url = os.getenv("RULES_URL")
-    message = f"Привет! У нас есть [правила оформления вакансий и резюме]({rules_url}). " \
-              f"Отредактируйте ваше сообщение и оно будет отправлено в канал @django\\_jobs\\_board."
-    update.message.reply_to_message.reply_text(
-        text=message, parse_mode=ParseMode.MARKDOWN, quote=True
-    )
-    update.message.delete()
-
-
-def log_errors(update, error):
-    logger.warning('Update "%s" caused error "%s"', update, error)
-
-
-class ContainsJobHashTag(MessageFilter):
-    JOB_HASHTAGS = ["#cv", "#job"]
-
-    def filter(self, message: Message) -> bool:
-        return any([tag in message.text.lower() for tag in self.JOB_HASHTAGS])
-
-
-def with_default_filters(*filters):
-    """Apply default filters to the given filter classes."""
-    default_filters = [
-        Filters.chat(
-            chat_id=int(os.getenv("CHAT_ID_FROM")),
-        ),
-    ]
-    return reduce(operator.and_, [*default_filters, *filters])
-
-
-def forward_messages_that_match(*filters) -> MessageHandler:
-    return MessageHandler(filters=with_default_filters(*filters), callback=forward)
-
-
-def reply_warning_to_messages_that_match(*filters) -> CommandHandler:
-    return CommandHandler(
-        command="warn", filters=with_default_filters(*filters), callback=warn
-    )
-
-
-def in_heroku() -> bool:
-    return os.getenv("HEROKU_APP_NAME") is not None
-
-
-def init_sentry():
-    sentry_dsn = os.getenv("SENTRY_DSN")
-
-    if sentry_dsn:
-        sentry_sdk.init(sentry_dsn)
-
-
 def main():
     bot_token = os.getenv("BOT_TOKEN")
     admins = os.getenv("ADMINS").split(",")
 
     bot = Updater(bot_token)
+    # automated message forwarding
     bot.dispatcher.add_handler(
-        forward_messages_that_match(
-            ContainsJobHashTag(),
-            Filters.text,
-            ~Filters.command,
+        handlers.auto_forward_messages(
+            contrib_filters.text,
+            contrib_filters.update.message,
+            ~contrib_filters.command,
+            filters.contains_job_hashtag,
+            filters.contains_django_mention,
+        )
+    )
+    # manual admin commands
+    bot.dispatcher.add_handler(
+        handlers.reply_warning_to_messages(
+            contrib_filters.reply,
+            contrib_filters.command,
+            contrib_filters.user(username=admins),
         )
     )
     bot.dispatcher.add_handler(
-        reply_warning_to_messages_that_match(
-            Filters.reply, Filters.command, Filters.user(username=admins)
+        handlers.manual_forward_messages(
+            contrib_filters.reply,
+            contrib_filters.command,
+            contrib_filters.user(username=admins),
+            filters.forwarded_message_contains_job_hashtag,
+            filters.forwarded_message_contains_django_mention,
         )
     )
-    bot.dispatcher.add_error_handler(log_errors)
+    bot.dispatcher.add_handler(
+        handlers.put_in_readonly_for_message(
+            contrib_filters.reply,
+            contrib_filters.command,
+            contrib_filters.user(username=admins),
+        )
+    )
+    # error handling
+    bot.dispatcher.add_error_handler(handlers.log_errors)
 
     if in_heroku():
         app_name = os.getenv("HEROKU_APP_NAME")

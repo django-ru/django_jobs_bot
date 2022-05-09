@@ -6,7 +6,7 @@
 #
 apscheduler==3.6.3
     # via python-telegram-bot
-black==22.1.0
+black==22.3.0
     # via -r requirements-dev.in
 cachetools==4.2.2
     # via python-telegram-bot

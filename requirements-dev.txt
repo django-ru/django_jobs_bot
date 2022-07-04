@@ -8,6 +8,8 @@ apscheduler==3.6.3
     # via python-telegram-bot
 black==22.6.0
     # via -r requirements-dev.in
+build==0.8.0
+    # via pip-tools
 cachetools==4.2.2
     # via python-telegram-bot
 certifi==2021.5.30
@@ -20,20 +22,25 @@ click==8.0.1
     #   pip-tools
 mypy-extensions==0.4.3
     # via black
+packaging==21.3
+    # via build
 pathspec==0.9.0
     # via black
 pep517==0.10.0
-    # via pip-tools
-pip-tools==6.6.2
+    # via build
+pip-tools==6.8.0
     # via -r requirements-dev.in
 platformdirs==2.2.0
     # via black
+pyparsing==3.0.9
+    # via packaging
 python-telegram-bot==13.12
     # via -r requirements.in
 pytz==2021.1
     # via
     #   apscheduler
     #   python-telegram-bot
+    #   tzlocal
 sentry-sdk==1.6.0
     # via -r requirements.in
 six==1.16.0
@@ -41,7 +48,9 @@ six==1.16.0
 toml==0.10.2
     # via pep517
 tomli==2.0.0
-    # via black
+    # via
+    #   black
+    #   build
 tornado==6.1
     # via python-telegram-bot
 tzlocal==2.1

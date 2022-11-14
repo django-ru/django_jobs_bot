@@ -28,7 +28,7 @@ pathspec==0.9.0
     # via black
 pep517==0.10.0
     # via build
-pip-tools==6.9.0
+pip-tools==6.10.0
     # via -r requirements-dev.in
 platformdirs==2.2.0
     # via black
@@ -47,10 +47,6 @@ six==1.16.0
     # via apscheduler
 toml==0.10.2
     # via pep517
-tomli==2.0.0
-    # via
-    #   black
-    #   build
 tornado==6.1
     # via python-telegram-bot
 tzlocal==2.1

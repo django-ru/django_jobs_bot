@@ -6,7 +6,7 @@ from telegram.ext.filters import Filters as contrib_filters
 
 import filters
 import handlers
-from utils import in_heroku, init_sentry
+from utils import in_heroku, init_sentry, in_render
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -65,6 +65,16 @@ def main():
             port=int(os.getenv("PORT")),
             url_path=bot_token,
             webhook_url=f"https://{app_name}.herokuapp.com/" + bot_token,
+        )
+        bot.idle()
+    elif in_render():
+        app_name = os.getenv("RENDER_APP_NAME")
+        init_sentry()
+        bot.start_webhook(
+            listen="0.0.0.0",
+            port=int(os.getenv("PORT")),
+            url_path=bot_token,
+            webhook_url=f"https://{app_name}.onrender.com/" + bot_token,
         )
         bot.idle()
     else:

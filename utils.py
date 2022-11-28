@@ -7,6 +7,10 @@ def in_heroku() -> bool:
     return os.getenv("HEROKU_APP_NAME") is not None
 
 
+def in_render() -> bool:
+    return os.getenv("RENDER_APP_NAME") is not None
+
+
 def init_sentry():
     sentry_dsn = os.getenv("SENTRY_DSN")
 

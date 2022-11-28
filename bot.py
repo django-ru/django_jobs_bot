@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 def main():
     bot_token = os.getenv("BOT_TOKEN")
-    admins = os.getenv("ADMINS").split(",")
+    admins = os.getenv("ADMINS", "").split(",")
 
     bot = Updater(bot_token)
     # automated message forwarding

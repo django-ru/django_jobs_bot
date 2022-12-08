@@ -12,7 +12,7 @@ build==0.8.0
     # via pip-tools
 cachetools==4.2.2
     # via python-telegram-bot
-certifi==2021.5.30
+certifi==2022.12.7
     # via
     #   python-telegram-bot
     #   sentry-sdk

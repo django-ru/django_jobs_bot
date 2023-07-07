@@ -1,8 +1,9 @@
 import os
 import time
 
-from telegram import ChatPermissions, ParseMode, Update
-from telegram.ext import MessageHandler, CommandHandler, CallbackContext
+from telegram import ChatPermissions, Update
+from telegram.constants import ParseMode
+from telegram.ext import MessageHandler, CommandHandler, ContextTypes
 
 from bot import logger
 from filters import with_default_filters
@@ -16,36 +17,36 @@ def log_errors(update, error):
 # callbacks
 
 
-def auto_forward_callback(update: Update, context: CallbackContext):
+async def auto_forward_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id_to_forward = int(os.getenv("CHAT_ID_TO"))
     logger.info(
         "Forwarding message %s to %s", update.message.message_id, chat_id_to_forward
     )
-    update.message.forward(chat_id=chat_id_to_forward)
+    await update.message.forward(chat_id=chat_id_to_forward)
 
 
-def manual_forward_callback(update: Update, context: CallbackContext):
+async def manual_forward_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id_to_forward = int(os.getenv("CHAT_ID_TO"))
     logger.info(
         "Forwarding message %s to %s", update.message.message_id, chat_id_to_forward
     )
-    update.message.reply_to_message.forward(chat_id=chat_id_to_forward)
-    update.message.delete()
+    await update.message.reply_to_message.forward(chat_id=chat_id_to_forward)
+    await update.message.delete()
 
 
-def warn_callback(update: Update, context: CallbackContext):
+async def warn_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     rules_url = os.getenv("RULES_URL")
     message = (
         f"Привет! У нас есть [правила оформления вакансий и резюме]({rules_url}). "
         f"Отредактируйте ваше сообщение и оно отправится в канал @django\\_jobs\\_board."
     )
-    update.message.reply_to_message.reply_text(
+    await update.message.reply_to_message.reply_text(
         text=message, parse_mode=ParseMode.MARKDOWN, quote=True
     )
-    update.message.delete()
+    await update.message.delete()
 
 
-def readonly_callback(update: Update, context: CallbackContext):
+async def readonly_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.reply_to_message.from_user
     days, reason = update.message.text.strip("/ro ").split(" ", 1)
     if days.isnumeric():
@@ -72,10 +73,10 @@ def readonly_callback(update: Update, context: CallbackContext):
     message = f"{user.name} в ридонли на {days} {plural_days(days)}."
     if reason:
         message += f" по причине: {reason}"
-    update.message.reply_to_message.reply_text(
+    await update.message.reply_to_message.reply_text(
         text=message, parse_mode=ParseMode.MARKDOWN, quote=True
     )
-    update.message.delete()
+    await update.message.delete()
 
 
 # handlers

@@ -1,8 +1,7 @@
 import logging
 import os
 
-from telegram.ext import Updater
-from telegram.ext.filters import Filters as contrib_filters
+from telegram.ext import filters as ext_filters, ApplicationBuilder
 
 import filters
 import handlers
@@ -15,71 +14,66 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def main():
+if __name__ == '__main__':
     bot_token = os.getenv("BOT_TOKEN")
     admins = os.getenv("ADMINS", "").split(",")
 
-    bot = Updater(bot_token)
+    application = ApplicationBuilder().token(bot_token).build()
+
     # automated message forwarding
-    bot.dispatcher.add_handler(
+    application.add_handler(
         handlers.auto_forward_messages(
-            contrib_filters.text,
-            contrib_filters.update.message,
-            ~contrib_filters.command,
+            ext_filters.TEXT,
+            ext_filters.UpdateType.MESSAGE,
+            ~ext_filters.COMMAND,
             filters.contains_job_hashtag,
             filters.contains_django_mention,
         )
     )
     # manual admin commands
-    bot.dispatcher.add_handler(
+    application.add_handler(
         handlers.reply_warning_to_messages(
-            contrib_filters.reply,
-            contrib_filters.command,
-            contrib_filters.user(username=admins),
+            ext_filters.REPLY,
+            ext_filters.COMMAND,
+            ext_filters.User(username=admins),
         )
     )
-    bot.dispatcher.add_handler(
+    application.add_handler(
         handlers.manual_forward_messages(
-            contrib_filters.reply,
-            contrib_filters.command,
-            contrib_filters.user(username=admins),
+            ext_filters.REPLY,
+            ext_filters.COMMAND,
+            ext_filters.User(username=admins),
             filters.forwarded_message_contains_job_hashtag,
             filters.forwarded_message_contains_django_mention,
         )
     )
-    bot.dispatcher.add_handler(
+    application.add_handler(
         handlers.put_in_readonly_for_message(
-            contrib_filters.reply,
-            contrib_filters.command,
-            contrib_filters.user(username=admins),
+            ext_filters.REPLY,
+            ext_filters.COMMAND,
+            ext_filters.User(username=admins),
         )
     )
     # error handling
-    bot.dispatcher.add_error_handler(handlers.log_errors)
+    application.add_error_handler(handlers.log_errors)
 
     if in_heroku():
         app_name = os.getenv("HEROKU_APP_NAME")
         init_sentry()
-        bot.start_webhook(
+        application.run_webhook(
             listen="0.0.0.0",
             port=int(os.getenv("PORT")),
             url_path=bot_token,
             webhook_url=f"https://{app_name}.herokuapp.com/" + bot_token,
         )
-        bot.idle()
     elif in_render():
         app_name = os.getenv("RENDER_APP_NAME")
         init_sentry()
-        bot.start_webhook(
+        application.run_webhook(
             listen="0.0.0.0",
             port=int(os.getenv("PORT")),
             url_path=bot_token,
             webhook_url=f"https://{app_name}.onrender.com/" + bot_token,
         )
-        bot.idle()
     else:
-        bot.start_polling()
-
-
-if __name__ == "__main__":
-    main()
+        application.run_polling()

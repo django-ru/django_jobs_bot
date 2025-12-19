@@ -20,12 +20,14 @@ class _ContainsJobHashTag(MessageFilter):
     JOB_HASHTAGS = ["#cv", "#job"]
 
     def filter(self, message: Message) -> bool:
-        return any([tag in message.text.lower() for tag in self.JOB_HASHTAGS])
+        text = (message.text or message.caption or "").lower()
+        return any([tag in text for tag in self.JOB_HASHTAGS])
 
 
 class _ContainsDjangoMention(MessageFilter):
     def filter(self, message: Message) -> bool:
-        return "django" in message.text.lower()
+        text = (message.text or message.caption or "").lower()
+        return "django" in text
 
 
 class _ForwardedMessageContainsJobHashTag(MessageFilter):

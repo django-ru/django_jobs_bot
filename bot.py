@@ -23,7 +23,7 @@ def main():
     # automated message forwarding
     bot.dispatcher.add_handler(
         handlers.auto_forward_messages(
-            contrib_filters.text,
+            contrib_filters.text | contrib_filters.caption,
             contrib_filters.update.message,
             ~contrib_filters.command,
             filters.contains_job_hashtag,

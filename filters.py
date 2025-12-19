@@ -1,9 +1,12 @@
+import logging
 import operator
 import os
 from functools import reduce
 
 from telegram import Message
 from telegram.ext import MessageFilter, Filters
+
+logger = logging.getLogger(__name__)
 
 
 def with_default_filters(*filters):
@@ -21,13 +24,24 @@ class _ContainsJobHashTag(MessageFilter):
 
     def filter(self, message: Message) -> bool:
         text = (message.text or message.caption or "").lower()
-        return any([tag in text for tag in self.JOB_HASHTAGS])
+        result = any([tag in text for tag in self.JOB_HASHTAGS])
+        if result:
+            found_tags = [tag for tag in self.JOB_HASHTAGS if tag in text]
+            logger.debug(
+                "Message %s contains job hashtag(s): %s",
+                message.message_id,
+                ", ".join(found_tags),
+            )
+        return result
 
 
 class _ContainsDjangoMention(MessageFilter):
     def filter(self, message: Message) -> bool:
         text = (message.text or message.caption or "").lower()
-        return "django" in text
+        result = "django" in text
+        if result:
+            logger.debug("Message %s contains django mention", message.message_id)
+        return result
 
 
 class _ForwardedMessageContainsJobHashTag(MessageFilter):

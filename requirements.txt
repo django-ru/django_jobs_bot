@@ -8,7 +8,7 @@ apscheduler==3.6.3
     # via python-telegram-bot
 cachetools==4.2.2
     # via python-telegram-bot
-certifi==2022.12.7
+certifi==2024.7.4
     # via
     #   python-telegram-bot
     #   sentry-sdk

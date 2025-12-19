@@ -41,14 +41,20 @@ pytz==2021.1
     #   apscheduler
     #   python-telegram-bot
     #   tzlocal
-sentry-sdk==1.23.1
+sentry-sdk==1.45.1
     # via -r requirements.in
 six==1.16.0
     # via apscheduler
 toml==0.10.2
     # via pep517
+tomli==2.3.0
+    # via
+    #   black
+    #   build
 tornado==6.1
     # via python-telegram-bot
+typing-extensions==4.15.0
+    # via black
 tzlocal==2.1
     # via apscheduler
 urllib3==1.26.14

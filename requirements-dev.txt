@@ -6,7 +6,7 @@
 #
 apscheduler==3.6.3
     # via python-telegram-bot
-black==24.3.0
+black==25.11.0
     # via -r requirements-dev.in
 build==0.8.0
     # via pip-tools
@@ -36,6 +36,8 @@ platformdirs==2.2.0
     # via black
 python-telegram-bot==13.15
     # via -r requirements.in
+pytokens==0.3.0
+    # via black
 pytz==2021.1
     # via
     #   apscheduler

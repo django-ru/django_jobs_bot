@@ -43,7 +43,7 @@ pytz==2021.1
     #   apscheduler
     #   python-telegram-bot
     #   tzlocal
-sentry-sdk==1.45.1
+sentry-sdk==2.48.0
     # via -r requirements.in
 six==1.16.0
     # via apscheduler

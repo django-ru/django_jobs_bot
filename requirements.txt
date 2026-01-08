@@ -27,7 +27,7 @@ tornado==6.1
     # via python-telegram-bot
 tzlocal==2.1
     # via apscheduler
-urllib3==2.6.0
+urllib3==2.6.3
     # via sentry-sdk
 
 # The following packages are considered to be unsafe in a requirements file:

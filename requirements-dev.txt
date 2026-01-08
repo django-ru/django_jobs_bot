@@ -62,7 +62,7 @@ typing-extensions==4.15.0
     # via black
 tzlocal==2.1
     # via apscheduler
-urllib3==2.6.0
+urllib3==2.6.3
     # via sentry-sdk
 wheel==0.38.1
     # via pip-tools
